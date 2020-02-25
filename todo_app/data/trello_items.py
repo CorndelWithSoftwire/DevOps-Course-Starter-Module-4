@@ -105,19 +105,19 @@ def get_item(id):
     return next((item for item in items if item['id'] == id), None)
 
 
-def add_item(title):
+def add_item(name):
     """
-    Adds a new item with the specified title as a Trello card.
+    Adds a new item with the specified name as a Trello card.
 
     Args:
-        title (str): The title of the item.
+        name (str): The name of the item.
 
     Returns:
         item: The saved item.
     """
     todo_list = get_list('To Do')
 
-    params = build_params({ 'name': title, 'idList': todo_list['id'] })
+    params = build_params({ 'name': name, 'idList': todo_list['id'] })
     path = '/cards'
 
     response = requests.post(TRELLO_BASE_URL + path, params = params)

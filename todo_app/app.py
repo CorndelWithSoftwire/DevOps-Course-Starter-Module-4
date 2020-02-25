@@ -14,8 +14,8 @@ def index():
 
 @app.route('/items/new', methods=['POST'])
 def add_item():
-    title = request.form['title']
-    trello.add_item(title)
+    name = request.form['name']
+    trello.add_item(name)
     return redirect(url_for('index'))
 
 
@@ -23,6 +23,7 @@ def add_item():
 def complete_item(id):
     trello.complete_item(id)
     return redirect(url_for('index'))
+
 
 @app.route('/items/<id>/uncomplete')
 def uncomplete_item(id):
