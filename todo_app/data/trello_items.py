@@ -137,12 +137,7 @@ def start_item(id):
         item: The saved item, or None if no items match the specified ID.
     """
     doing_list = get_list('Doing')
-
-    params = build_params({ 'idList': doing_list['id'] })
-    path = '/cards/%s' % id
-
-    response = requests.put(TRELLO_BASE_URL + path, params = params)
-    card = response.json()
+    card = move_card_to_list(id, doing_list)
 
     return Item.fromTrelloCard(card, doing_list)
 
@@ -158,12 +153,7 @@ def complete_item(id):
         item: The saved item, or None if no items match the specified ID.
     """
     done_list = get_list('Done')
-
-    params = build_params({ 'idList': done_list['id'] })
-    path = '/cards/%s' % id
-
-    response = requests.put(TRELLO_BASE_URL + path, params = params)
-    card = response.json()
+    card = move_card_to_list(id, done_list)
 
     return Item.fromTrelloCard(card, done_list)
 
@@ -179,11 +169,16 @@ def uncomplete_item(id):
         item: The saved item, or None if no items match the specified ID.
     """
     todo_list = get_list('To Do')
+    card = move_card_to_list(id, todo_list)
 
-    params = build_params({ 'idList': todo_list['id'] })
-    path = '/cards/%s' % id
+    return Item.fromTrelloCard(card, todo_list)
+
+
+def move_card_to_list(card_id, list):
+    params = build_params({ 'idList': list['id'] })
+    path = '/cards/%s' % card_id
 
     response = requests.put(TRELLO_BASE_URL + path, params = params)
     card = response.json()
 
-    return Item.fromTrelloCard(card, todo_list)
+    return card
