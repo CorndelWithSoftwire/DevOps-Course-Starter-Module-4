@@ -5,6 +5,8 @@ from todo_app import trello_config as config
 def get_auth_params():
     return { 'key': config.TRELLO_API_KEY, 'token': config.TRELLO_API_SECRET }
 
+def build_url(endpoint):
+    return config.TRELLO_BASE_URL + endpoint
 
 def build_params(params = {}):
     full_params = get_auth_params()
@@ -20,9 +22,9 @@ def get_boards():
         list: The list of Trello boards.
     """
     params = build_params()
-    path = '/members/me/boards'
+    url = build_url('/members/me/boards')
 
-    response = requests.get(config.TRELLO_BASE_URL + path, params = params)
+    response = requests.get(url, params = params)
     boards = response.json()
 
     return boards
@@ -50,9 +52,9 @@ def get_lists():
         list: The list of Trello lists.
     """
     params = build_params({ 'cards': 'open' }) # Only return cards that have not been archived
-    path = '/boards/%s/lists' % config.TRELLO_BOARD_ID
+    url = build_url('/boards/%s/lists' % config.TRELLO_BOARD_ID)
 
-    response = requests.get(config.TRELLO_BASE_URL + path, params = params)
+    response = requests.get(url, params = params)
     lists = response.json()
 
     return lists
@@ -116,9 +118,9 @@ def add_item(name):
     todo_list = get_list('To Do')
 
     params = build_params({ 'name': name, 'idList': todo_list['id'] })
-    path = '/cards'
+    url = build_url('/cards')
 
-    response = requests.post(config.TRELLO_BASE_URL + path, params = params)
+    response = requests.post(url, params = params)
     card = response.json()
 
     return Item.fromTrelloCard(card, todo_list)
@@ -174,9 +176,9 @@ def uncomplete_item(id):
 
 def move_card_to_list(card_id, list):
     params = build_params({ 'idList': list['id'] })
-    path = '/cards/%s' % card_id
+    url = build_url('/cards/%s' % card_id)
 
-    response = requests.put(config.TRELLO_BASE_URL + path, params = params)
+    response = requests.put(url, params = params)
     card = response.json()
 
     return card
