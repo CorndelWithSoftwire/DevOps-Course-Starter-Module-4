@@ -11,7 +11,13 @@
     <div class="col-md-12">
       <h2>Items</h2>
       <ul class="list-group mb-4">
-        <!-- List the todo items here -->
+        {% for item in items %}
+          <li class="list-group-item flex-column">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mt-1 mb-1">{{ item.title }}</h5>
+            </div>
+          </li>
+        {% endfor %}
       </ul>
     </div>
   </div>
