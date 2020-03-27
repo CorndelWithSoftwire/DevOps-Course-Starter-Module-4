@@ -2,8 +2,6 @@ from todo_item import Item
 import requests
 from todo_app import trello_config as config
 
-TRELLO_BASE_URL = 'https://api.trello.com/1'
-
 def get_auth_params():
     return { 'key': config.TRELLO_API_KEY, 'token': config.TRELLO_API_SECRET }
 
@@ -24,7 +22,7 @@ def get_boards():
     params = build_params()
     path = '/members/me/boards'
 
-    response = requests.get(TRELLO_BASE_URL + path, params = params)
+    response = requests.get(config.TRELLO_BASE_URL + path, params = params)
     boards = response.json()
 
     return boards
@@ -54,7 +52,7 @@ def get_lists():
     params = build_params({ 'cards': 'open' }) # Only return cards that have not been archived
     path = '/boards/%s/lists' % config.TRELLO_BOARD_ID
 
-    response = requests.get(TRELLO_BASE_URL + path, params = params)
+    response = requests.get(config.TRELLO_BASE_URL + path, params = params)
     lists = response.json()
 
     return lists
@@ -120,7 +118,7 @@ def add_item(name):
     params = build_params({ 'name': name, 'idList': todo_list['id'] })
     path = '/cards'
 
-    response = requests.post(TRELLO_BASE_URL + path, params = params)
+    response = requests.post(config.TRELLO_BASE_URL + path, params = params)
     card = response.json()
 
     return Item.fromTrelloCard(card, todo_list)
@@ -178,7 +176,7 @@ def move_card_to_list(card_id, list):
     params = build_params({ 'idList': list['id'] })
     path = '/cards/%s' % card_id
 
-    response = requests.put(TRELLO_BASE_URL + path, params = params)
+    response = requests.put(config.TRELLO_BASE_URL + path, params = params)
     card = response.json()
 
     return card
