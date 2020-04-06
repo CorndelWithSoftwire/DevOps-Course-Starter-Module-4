@@ -12,6 +12,12 @@ def index():
     items = session.get_items()
     return render_template('index.html', items = items)
 
+@app.route('/items/new', methods=['POST'])
+def add_item():
+    title = request.form['title']
+    session.add_item(title)
+    return redirect(url_for('index')) 
+
 
 if __name__ == '__main__':
     app.run()
