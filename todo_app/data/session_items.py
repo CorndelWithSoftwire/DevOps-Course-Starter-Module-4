@@ -67,3 +67,13 @@ def save_item(item):
     session['items'] = updated_items
 
     return item
+
+
+def complete_item(id):
+    item = get_item(id)
+
+    if item != None:
+        item['status'] = 'Completed'
+        save_item(item)
+
+    return item
