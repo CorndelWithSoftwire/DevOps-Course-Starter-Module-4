@@ -126,6 +126,27 @@ def add_item(name):
     return Item.fromTrelloCard(card, todo_list)
 
 
+def start_item(id):
+    """
+    Moves the item with the specified ID to the "Doing" list in Trello.
+
+    Args:
+        id (str): The ID of the item.
+
+    Returns:
+        item: The saved item, or None if no items match the specified ID.
+    """
+    doing_list = get_list('Doing')
+
+    params = build_params({ 'idList': doing_list['id'] })
+    path = '/cards/%s' % id
+
+    response = requests.put(TRELLO_BASE_URL + path, params = params)
+    card = response.json()
+
+    return Item.fromTrelloCard(card, doing_list)
+
+
 def complete_item(id):
     """
     Moves the item with the specified ID to the "Done" list in Trello.

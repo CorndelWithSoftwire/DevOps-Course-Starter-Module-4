@@ -15,8 +15,10 @@
   </div>
   {% if item.status == 'Done' %}
     <a href="{{ url_for('uncomplete_item', id=item.id) }}" class="btn btn-sm btn-secondary">Mark as Incomplete</a>
+  {% elif item.status == 'To Do' %}
+    <a href="{{ url_for('start_item', id=item.id) }}" class="btn btn-sm btn-success">Start</a>
   {% else %}
-    <a href="{{ url_for('complete_item', id=item.id) }}" class="btn btn-sm btn-primary">Mark as Complete</a>
+    <a href="{{ url_for('complete_item', id=item.id) }}" class="btn btn-sm btn-primary">Complete</a>
   {% endif %}
 </li>
 {%- endmacro %}
