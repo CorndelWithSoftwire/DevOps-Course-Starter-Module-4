@@ -7,27 +7,70 @@ def get_auth_params():
     return { 'key': config.TRELLO_API_KEY, 'token': config.TRELLO_API_SECRET }
 
 
-def get_board():
-    params = get_auth_params()
+def build_params(params = {}):
+    full_params = get_auth_params()
+    full_params.update(params)
+    return full_params
+
+
+def get_boards():
+    """
+    Fetches all boards from Trello.
+
+    Returns:
+        list: The list of Trello boards.
+    """
+    params = build_params()
     path = '/members/me/boards'
 
     response = requests.get(TRELLO_BASE_URL + path, params = params)
     boards = response.json()
 
-    return boards[-3]
+    return boards
+
+
+def get_board(name):
+    """
+    Fetches the board from Trello with the specified name.
+
+    Args:
+        name (str): The name of the list.
+
+    Returns:
+        board: The board, or None if no board matches the specified name.
+    """
+    boards = get_boards()
+    return next((board for board in boards if board['name'] == name), None)
 
 
 def get_lists():
-    board = get_board()
-    board_id = board['id']
+    """
+    Fetches all lists for the default Trello board.
 
-    params = get_auth_params()
-    params.update({ 'cards': 'open' }) # Only return cards that have not been archived
-    path = '/boards/' + board_id + '/lists'
+    Returns:
+        list: The list of Trello lists.
+    """
+    params = build_params({ 'cards': 'open' }) # Only return cards that have not been archived
+    path = '/boards/%s/lists' % config.TRELLO_BOARD_ID
 
     response = requests.get(TRELLO_BASE_URL + path, params = params)
     lists = response.json()
+
     return lists
+
+
+def get_list(name):
+    """
+    Fetches the list from Trello with the specified name.
+
+    Args:
+        name (str): The name of the list.
+
+    Returns:
+        list: The list and its items (cards), or None if no list matches the specified name.
+    """
+    lists = get_lists()
+    return next((list for list in lists if list['name'] == name), None)
 
 
 def create_item_from_card(card, list):
@@ -50,20 +93,6 @@ def get_items():
             items.append(item)
 
     return items
-
-
-def get_list(name):
-    """
-    Fetches the list from Trello with the specified name.
-
-    Args:
-        name (str): The name of the list.
-
-    Returns:
-        list: The list and its items (cards), or None if no list matches the specified name.
-    """
-    lists = get_lists()
-    return next((list for list in lists if list['name'] == name), None)
 
 
 def get_item(id):
@@ -92,8 +121,7 @@ def add_item(title):
     """
     todo_list = get_list('To Do')
 
-    params = get_auth_params()
-    params.update({ 'name': title, 'idList': todo_list['id'] })
+    params = build_params({ 'name': title, 'idList': todo_list['id'] })
     path = '/cards'
 
     response = requests.post(TRELLO_BASE_URL + path, params = params)
@@ -114,9 +142,8 @@ def complete_item(id):
     """
     done_list = get_list('Done')
 
-    params = get_auth_params()
-    params.update({ 'idList': done_list['id'] })
-    path = '/cards/' + id
+    params = build_params({ 'idList': done_list['id'] })
+    path = '/cards/%s' % id
 
     response = requests.put(TRELLO_BASE_URL + path, params = params)
     card = response.json()
@@ -136,9 +163,8 @@ def uncomplete_item(id):
     """
     todo_list = get_list('To Do')
 
-    params = get_auth_params()
-    params.update({ 'idList': todo_list['id'] })
-    path = '/cards/' + id
+    params = build_params({ 'idList': todo_list['id'] })
+    path = '/cards/%s' % id
 
     response = requests.put(TRELLO_BASE_URL + path, params = params)
     card = response.json()
