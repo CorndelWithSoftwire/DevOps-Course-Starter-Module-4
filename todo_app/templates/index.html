@@ -1,4 +1,26 @@
 {% extends "layout.html" %}
+
+{% macro display_item(item) -%}
+<li class="list-group-item">
+  <div class="d-flex w-100 justify-content-between">
+    <h5 class="mb-1">{{ item.name }}</h5>
+    {% if item.status == 'Done' %}
+      {% set badge_style = 'badge-success' %}
+    {% elif item.status == 'To Do' %}
+      {% set badge_style = 'badge-secondary' %}
+    {% else %}
+      {% set badge_style = 'badge-primary' %}
+    {% endif %}
+    <div><span class="badge {{ badge_style }}">{{ item.status }}</span></div>
+  </div>
+  {% if item.status == 'Done' %}
+    <a href="{{ url_for('uncomplete_item', id=item.id) }}" class="btn btn-sm btn-secondary">Mark as Incomplete</a>
+  {% else %}
+    <a href="{{ url_for('complete_item', id=item.id) }}" class="btn btn-sm btn-primary">Mark as Complete</a>
+  {% endif %}
+</li>
+{%- endmacro %}
+
 {% block title %}To-Do App{% endblock %}
 
 {% block content %}
@@ -31,16 +53,7 @@
       <h2>Items</h2>
       <ul class="list-group mb-4">
         {% for item in items %}
-          <li class="list-group-item flex-column">
-            <div class="d-flex w-100 justify-content-between">
-              <h5 class="mt-1 mb-1">{{ item.title }}</h5>
-              {% if item.status == 'Done' %}
-                <a href="{{ url_for('uncomplete_item', id=item.id) }}" class="btn btn-sm btn-secondary">Mark as Incomplete</a>
-              {% else %}
-                <a href="{{ url_for('complete_item', id=item.id) }}" class="btn btn-sm btn-primary">Mark as Complete</a>
-              {% endif %}
-            </div>
-          </li>
+          {{ display_item(item) }}
         {% endfor %}
       </ul>
     </div>
