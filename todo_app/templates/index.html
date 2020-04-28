@@ -34,7 +34,9 @@
           <li class="list-group-item flex-column">
             <div class="d-flex w-100 justify-content-between">
               <h5 class="mt-1 mb-1">{{ item.title }}</h5>
-              {% if item.status != 'Completed' %}
+              {% if item.status == 'Done' %}
+                <a href="{{ url_for('uncomplete_item', id=item.id) }}" class="btn btn-sm btn-secondary">Mark as Incomplete</a>
+              {% else %}
                 <a href="{{ url_for('complete_item', id=item.id) }}" class="btn btn-sm btn-primary">Mark as Complete</a>
               {% endif %}
             </div>

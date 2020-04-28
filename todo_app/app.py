@@ -24,6 +24,11 @@ def complete_item(id):
     trello.complete_item(id)
     return redirect(url_for('index'))
 
+@app.route('/items/<id>/uncomplete')
+def uncomplete_item(id):
+    trello.uncomplete_item(id)
+    return redirect(url_for('index')) 
+
 
 if __name__ == '__main__':
     app.run()
