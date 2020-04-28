@@ -1,3 +1,4 @@
+from todo_item import Item
 import requests
 from todo_app import trello_config as config
 
@@ -73,10 +74,6 @@ def get_list(name):
     return next((list for list in lists if list['name'] == name), None)
 
 
-def create_item_from_card(card, list):
-    return { 'id': card['id'], 'title': card['name'], 'status': list['name'] }
-
-
 def get_items():
     """
     Fetches all items (known as "cards") from Trello.
@@ -89,8 +86,7 @@ def get_items():
     items = []
     for card_list in lists:
         for card in card_list['cards']:
-            item = create_item_from_card(card, card_list)
-            items.append(item)
+            items.append(Item.fromTrelloCard(card, card_list))
 
     return items
 
@@ -127,7 +123,7 @@ def add_item(title):
     response = requests.post(TRELLO_BASE_URL + path, params = params)
     card = response.json()
 
-    return create_item_from_card(card, todo_list)
+    return Item.fromTrelloCard(card, todo_list)
 
 
 def complete_item(id):
@@ -148,7 +144,7 @@ def complete_item(id):
     response = requests.put(TRELLO_BASE_URL + path, params = params)
     card = response.json()
 
-    return create_item_from_card(card, done_list)
+    return Item.fromTrelloCard(card, done_list)
 
 
 def uncomplete_item(id):
@@ -169,4 +165,4 @@ def uncomplete_item(id):
     response = requests.put(TRELLO_BASE_URL + path, params = params)
     card = response.json()
 
-    return create_item_from_card(card, todo_list)
+    return Item.fromTrelloCard(card, todo_list)
