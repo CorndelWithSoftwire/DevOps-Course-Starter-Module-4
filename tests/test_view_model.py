@@ -41,7 +41,8 @@ def test_should_show_all_completed_items_if_there_are_three_or_fewer():
     items = [
         Item(1, 'Task 1', date.today(), 'Done'),
         Item(2, 'Task 2', date.today(), 'Done'),
-        Item(3, 'Task 3', date.today(), 'Done'),
+        Item(3, 'Task 3', date.today(), 'Doing'),
+        Item(4, 'Task 4', date.today(), 'Done'),
     ]
 
     view_model = ViewModel(items)

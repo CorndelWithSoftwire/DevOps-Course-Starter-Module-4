@@ -62,6 +62,15 @@
 
   {{ display_item_list('To Do', model.to_do_items) }}
   {{ display_item_list('Doing', model.doing_items) }}
-  {{ display_item_list('Done', model.done_items) }}
+
+  {% if model.show_all_done_items %}
+    {{ display_item_list('Done', model.done_items) }}
+  {% else %}
+    {{ display_item_list('Recently Completed', model.recent_done_items) }}
+    <details>
+      {{ display_item_list('', model.older_done_items) }}
+      <summary>Older Tasks</summary>
+    </details>
+  {% endif %}
 
 {% endblock %}
