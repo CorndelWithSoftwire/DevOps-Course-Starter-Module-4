@@ -26,7 +26,7 @@ def client():
 
 @patch('trello_items.config', new=TrelloConfig())
 @patch('requests.get')
-def test_index_page_loads_tasks(mock_get_requests, client):
+def test_index_page(mock_get_requests, client):
     mock_get_requests.side_effect = mock_get_lists
 
     response = client.get('/')
@@ -40,7 +40,7 @@ def test_index_page_loads_tasks(mock_get_requests, client):
 @patch('trello_items.config', new=TrelloConfig())
 @patch('requests.get')
 @patch('requests.post')
-def test_add_item_calls_trello_api(mock_post_request, mock_get_requests, client):
+def test_add_item(mock_post_request, mock_get_requests, client):
     mock_get_requests.side_effect = mock_get_lists
     mock_post_request.return_value.json.return_value = sample_trello_card
     form_data = dict(name='My new task')
@@ -48,9 +48,61 @@ def test_add_item_calls_trello_api(mock_post_request, mock_get_requests, client)
     response = client.post('/items/new', data=form_data)
 
     assert response.status_code == 302
+    assert response.headers['Location'] == 'http://localhost/'
     mock_post_request.assert_called_once_with(
         'https://api.trello.com/1/cards',
         params={"key": "api_key", "token": "api_secret", "name": "My new task", "idList": "5ede55964f947a716e858011"}
+    )
+
+
+@patch('trello_items.config', new=TrelloConfig())
+@patch('requests.get')
+@patch('requests.put')
+def test_start_item(mock_put_request, mock_get_requests, client):
+    mock_get_requests.side_effect = mock_get_lists
+    mock_put_request.return_value.json.return_value = sample_trello_card
+
+    response = client.get('/items/5ee100cac4bbbf5bd0350b3d/start')
+
+    assert response.status_code == 302
+    assert response.headers['Location'] == 'http://localhost/'
+    mock_put_request.assert_called_once_with(
+        'https://api.trello.com/1/cards/5ee100cac4bbbf5bd0350b3d',
+        params={"key": "api_key", "token": "api_secret", "idList": "5ede55a73f8b9a79b0aee43e"}
+    )
+
+
+@patch('trello_items.config', new=TrelloConfig())
+@patch('requests.get')
+@patch('requests.put')
+def test_complete_item(mock_put_request, mock_get_requests, client):
+    mock_get_requests.side_effect = mock_get_lists
+    mock_put_request.return_value.json.return_value = sample_trello_card
+
+    response = client.get('/items/5ee100cac4bbbf5bd0350b3e/complete')
+
+    assert response.status_code == 302
+    assert response.headers['Location'] == 'http://localhost/'
+    mock_put_request.assert_called_once_with(
+        'https://api.trello.com/1/cards/5ee100cac4bbbf5bd0350b3e',
+        params={"key": "api_key", "token": "api_secret", "idList": "5ede55ad3db1df04ce28fb9b"}
+    )
+
+
+@patch('trello_items.config', new=TrelloConfig())
+@patch('requests.get')
+@patch('requests.put')
+def test_uncomplete_item(mock_put_request, mock_get_requests, client):
+    mock_get_requests.side_effect = mock_get_lists
+    mock_put_request.return_value.json.return_value = sample_trello_card
+
+    response = client.get('/items/5ee100cac4bbbf5bd0350b3f/uncomplete')
+
+    assert response.status_code == 302
+    assert response.headers['Location'] == 'http://localhost/'
+    mock_put_request.assert_called_once_with(
+        'https://api.trello.com/1/cards/5ee100cac4bbbf5bd0350b3f',
+        params={"key": "api_key", "token": "api_secret", "idList": "5ede55964f947a716e858011"}
     )
 
 
@@ -105,9 +157,3 @@ def mock_get_lists(url, params):
         return response
 
     return None
-
-
-def mock_post(url, params):
-    response = Mock(ok=True)
-    response.json.return_value = sample_trello_card
-    return response
