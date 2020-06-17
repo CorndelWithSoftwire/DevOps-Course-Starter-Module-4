@@ -1,13 +1,14 @@
 class Item:
 
-    def __init__(self, id, name, status='To Do'):
+    def __init__(self, id, name, last_modified, status='To Do'):
         self.id = id
         self.name = name
+        self.last_modified = last_modified
         self.status = status
 
     @classmethod
     def fromTrelloCard(cls, card, list):
-        return cls(card['id'], card['name'], list['name'])
+        return cls(card['id'], card['name'], card['dateLastActivity'], list['name'])
 
     def reset(self):
         self.status = 'To Do'
