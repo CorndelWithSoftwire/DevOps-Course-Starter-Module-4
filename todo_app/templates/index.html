@@ -23,6 +23,19 @@
 </li>
 {%- endmacro %}
 
+{% macro display_item_list(title, items) -%}
+<div class="row">
+  <div class="col-md-12">
+    <h2>{{ title }}</h2>
+    <ul class="list-group mb-4">
+      {% for item in items %}
+        {{ display_item(item) }}
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+{%- endmacro %}
+
 {% block title %}To-Do App{% endblock %}
 
 {% block content %}
@@ -47,37 +60,8 @@
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-md-12">
-      <h2>To Do</h2>
-      <ul class="list-group mb-4">
-        {% for item in model.to_do_items %}
-          {{ display_item(item) }}
-        {% endfor %}
-      </ul>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-12">
-      <h2>Doing</h2>
-      <ul class="list-group mb-4">
-        {% for item in model.doing_items %}
-          {{ display_item(item) }}
-        {% endfor %}
-      </ul>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-12">
-      <h2>Done</h2>
-      <ul class="list-group mb-4">
-        {% for item in model.done_items %}
-          {{ display_item(item) }}
-        {% endfor %}
-      </ul>
-    </div>
-  </div>
+  {{ display_item_list('To Do', model.to_do_items) }}
+  {{ display_item_list('Doing', model.doing_items) }}
+  {{ display_item_list('Done', model.done_items) }}
 
 {% endblock %}
