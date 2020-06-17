@@ -1,5 +1,5 @@
 import os
-from unittest.mock import patch, Mock, MagicMock
+from unittest.mock import patch, Mock
 
 import pytest
 
@@ -51,7 +51,7 @@ def test_add_item(mock_post_request, mock_get_requests, client):
     assert response.headers['Location'] == 'http://localhost/'
     mock_post_request.assert_called_once_with(
         'https://api.trello.com/1/cards',
-        params={"key": "api_key", "token": "api_secret", "name": "My new task", "idList": "5ede55964f947a716e858011"}
+        params={"key": "api_key", "token": "api_secret", "name": "My new task", "idList": TODO_LIST_ID}
     )
 
 
@@ -62,13 +62,13 @@ def test_start_item(mock_put_request, mock_get_requests, client):
     mock_get_requests.side_effect = mock_get_lists
     mock_put_request.return_value.json.return_value = sample_trello_card
 
-    response = client.get('/items/5ee100cac4bbbf5bd0350b3d/start')
+    response = client.get(f'/items/{TODO_ITEM_ID}/start')
 
     assert response.status_code == 302
     assert response.headers['Location'] == 'http://localhost/'
     mock_put_request.assert_called_once_with(
-        'https://api.trello.com/1/cards/5ee100cac4bbbf5bd0350b3d',
-        params={"key": "api_key", "token": "api_secret", "idList": "5ede55a73f8b9a79b0aee43e"}
+        f'https://api.trello.com/1/cards/{TODO_ITEM_ID}',
+        params={"key": "api_key", "token": "api_secret", "idList": DOING_LIST_ID}
     )
 
 
@@ -79,13 +79,13 @@ def test_complete_item(mock_put_request, mock_get_requests, client):
     mock_get_requests.side_effect = mock_get_lists
     mock_put_request.return_value.json.return_value = sample_trello_card
 
-    response = client.get('/items/5ee100cac4bbbf5bd0350b3e/complete')
+    response = client.get(f'/items/{DOING_ITEM_ID}/complete')
 
     assert response.status_code == 302
     assert response.headers['Location'] == 'http://localhost/'
     mock_put_request.assert_called_once_with(
-        'https://api.trello.com/1/cards/5ee100cac4bbbf5bd0350b3e',
-        params={"key": "api_key", "token": "api_secret", "idList": "5ede55ad3db1df04ce28fb9b"}
+        f'https://api.trello.com/1/cards/{DOING_ITEM_ID}',
+        params={"key": "api_key", "token": "api_secret", "idList": DONE_LIST_ID}
     )
 
 
@@ -96,45 +96,53 @@ def test_uncomplete_item(mock_put_request, mock_get_requests, client):
     mock_get_requests.side_effect = mock_get_lists
     mock_put_request.return_value.json.return_value = sample_trello_card
 
-    response = client.get('/items/5ee100cac4bbbf5bd0350b3f/uncomplete')
+    response = client.get(f'/items/{DONE_ITEM_ID}/uncomplete')
 
     assert response.status_code == 302
     assert response.headers['Location'] == 'http://localhost/'
     mock_put_request.assert_called_once_with(
-        'https://api.trello.com/1/cards/5ee100cac4bbbf5bd0350b3f',
-        params={"key": "api_key", "token": "api_secret", "idList": "5ede55964f947a716e858011"}
+        f'https://api.trello.com/1/cards/{DONE_ITEM_ID}',
+        params={"key": "api_key", "token": "api_secret", "idList": TODO_LIST_ID}
     )
 
 
+TODO_LIST_ID = "5ede55964f947a716e858011"
+DOING_LIST_ID = "5ede55a73f8b9a79b0aee43e"
+DONE_LIST_ID = "5ede55ad3db1df04ce28fb9b"
+
+TODO_ITEM_ID = "5ee100cac4bbbf5bd0350b3d"
+DOING_ITEM_ID = "5ee100cac4bbbf5bd0350b3e"
+DONE_ITEM_ID = "5ee100cac4bbbf5bd0350b3f"
+
 sample_trello_lists_response = [
     {
-        "id": "5ede55964f947a716e858011",
+        "id": TODO_LIST_ID,
         "name": "To Do",
         "cards": [
             {
-                "id": "5ee100cac4bbbf5bd0350b3d",
+                "id": TODO_ITEM_ID,
                 "dateLastActivity": "2020-06-10T15:48:26.091Z",
                 "name": "My Next Task"
             }
         ]
     },
     {
-        "id": "5ede55a73f8b9a79b0aee43e",
+        "id": DOING_LIST_ID,
         "name": "Doing",
         "cards": [
             {
-                "id": "5ee100cac4bbbf5bd0350b3e",
+                "id": DOING_ITEM_ID,
                 "dateLastActivity": "2020-06-10T15:48:26.091Z",
                 "name": "My In Progress Task"
             }
         ]
     },
     {
-        "id": "5ede55ad3db1df04ce28fb9b",
+        "id": DONE_LIST_ID,
         "name": "Done",
         "cards": [
             {
-                "id": "5ee100cac4bbbf5bd0350b3f",
+                "id": DONE_ITEM_ID,
                 "dateLastActivity": "2020-06-10T15:48:26.091Z",
                 "name": "My Completed Task"
             }
@@ -144,7 +152,7 @@ sample_trello_lists_response = [
 
 
 sample_trello_card = {
-    "id": "5ee100cac4bbbf5bd0350b3d",
+    "id": TODO_ITEM_ID,
     "dateLastActivity": "2020-06-10T15:48:26.091Z",
     "name": "My Next Task"
 }
