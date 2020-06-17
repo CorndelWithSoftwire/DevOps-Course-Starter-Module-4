@@ -1,6 +1,6 @@
 class Item:
 
-    def __init__(self, id, name, status = 'To Do'):
+    def __init__(self, id, name, status='To Do'):
         self.id = id
         self.name = name
         self.status = status
@@ -17,3 +17,11 @@ class Item:
 
     def complete(self):
         self.status = 'Done'
+
+    def __eq__(self, other):
+        if not isinstance(other, Item):
+            return False
+
+        return self.id == other.id \
+            and self.name == other.name \
+            and self.status == other.status
