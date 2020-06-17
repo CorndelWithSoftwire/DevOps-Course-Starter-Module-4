@@ -17,3 +17,11 @@ class ViewModel:
     @property
     def show_all_done_items(self):
         return len(self._items) <= 3
+
+    @property
+    def recent_done_items(self):
+        return [item for item in self.done_items if item.modified_today()]
+
+    @property
+    def older_done_items(self):
+        return [item for item in self.done_items if not item.modified_today()]

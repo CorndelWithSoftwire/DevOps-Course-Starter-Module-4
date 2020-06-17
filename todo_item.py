@@ -1,3 +1,6 @@
+from datetime import date
+
+
 class Item:
 
     def __init__(self, id, name, last_modified, status='To Do'):
@@ -18,6 +21,9 @@ class Item:
 
     def complete(self):
         self.status = 'Done'
+
+    def modified_today(self):
+        return self.last_modified.date() == date.today()
 
     def __eq__(self, other):
         if not isinstance(other, Item):

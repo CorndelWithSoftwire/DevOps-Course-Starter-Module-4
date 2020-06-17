@@ -1,4 +1,6 @@
-from datetime import date
+from datetime import date, datetime
+
+from freezegun import freeze_time
 
 from todo_item import Item
 from view_model import ViewModel
@@ -58,3 +60,33 @@ def test_should_not_show_all_completed_items_if_there_are_more_than_three():
     view_model = ViewModel(items)
 
     assert view_model.show_all_done_items is False
+
+
+def test_recent_items_contain_only_items_last_modified_today():
+    items = [
+        Item(1, 'Done Yesterday', datetime(2020, 6, 15, 23, 59, 59), 'Done'),
+        Item(2, 'Done Today', datetime(2020, 6, 16, 0, 0, 0), 'Done'),
+        Item(3, 'Doing Today', datetime(2020, 6, 16, 9, 0, 0), 'Doing'),
+    ]
+
+    with freeze_time("2020-06-16 09:30:00"):
+        view_model = ViewModel(items)
+
+        assert view_model.recent_done_items == [
+            Item(2, 'Done Today', datetime(2020, 6, 16, 0, 0, 0), 'Done'),
+        ]
+
+
+def test_older_items_contain_only_items_last_modified_before_today():
+    items = [
+        Item(1, 'Done Yesterday', datetime(2020, 6, 15, 23, 59, 59), 'Done'),
+        Item(2, 'Done Today', datetime(2020, 6, 16, 0, 0, 0), 'Done'),
+        Item(3, 'Doing Yesterday', datetime(2020, 6, 15, 9, 0, 0), 'Doing'),
+    ]
+
+    with freeze_time("2020-06-16 09:30:00"):
+        view_model = ViewModel(items)
+
+        assert view_model.older_done_items == [
+            Item(1, 'Done Yesterday', datetime(2020, 6, 15, 23, 59, 59), 'Done'),
+        ]
