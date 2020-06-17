@@ -13,3 +13,7 @@ class ViewModel:
     @property
     def done_items(self):
         return [item for item in self._items if item.status == 'Done']
+
+    @property
+    def show_all_done_items(self):
+        return len(self._items) <= 3
