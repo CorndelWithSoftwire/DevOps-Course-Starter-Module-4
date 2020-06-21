@@ -1,12 +1,13 @@
-import os
 from unittest.mock import patch, Mock
 
 import pytest
 
-import app
+from todo_app.app import app
 
 
-class TrelloConfig:
+class TestConfig:
+    SECRET_KEY = 'secret'
+    TESTING = True
     TRELLO_BASE_URL = 'https://api.trello.com/1'
     TRELLO_API_KEY = 'api_key'
     TRELLO_API_SECRET = 'api_secret'
@@ -15,16 +16,12 @@ class TrelloConfig:
 
 @pytest.fixture
 def client():
-    os.environ['SECRET_KEY'] = 'secret'
-
-    test_app = app.create_app()
-    test_app.config['TESTING'] = True
+    test_app = app.config.from_object(TestConfig)
 
     with test_app.test_client() as client:
         yield client
 
 
-@patch('trello_items.config', new=TrelloConfig())
 @patch('requests.get')
 def test_index_page(mock_get_requests, client):
     mock_get_requests.side_effect = mock_get_lists
@@ -37,7 +34,6 @@ def test_index_page(mock_get_requests, client):
     assert 'My Completed Task' in response_html
 
 
-@patch('trello_items.config', new=TrelloConfig())
 @patch('requests.get')
 @patch('requests.post')
 def test_add_item(mock_post_request, mock_get_requests, client):
@@ -55,7 +51,6 @@ def test_add_item(mock_post_request, mock_get_requests, client):
     )
 
 
-@patch('trello_items.config', new=TrelloConfig())
 @patch('requests.get')
 @patch('requests.put')
 def test_start_item(mock_put_request, mock_get_requests, client):
@@ -72,7 +67,6 @@ def test_start_item(mock_put_request, mock_get_requests, client):
     )
 
 
-@patch('trello_items.config', new=TrelloConfig())
 @patch('requests.get')
 @patch('requests.put')
 def test_complete_item(mock_put_request, mock_get_requests, client):
@@ -89,7 +83,6 @@ def test_complete_item(mock_put_request, mock_get_requests, client):
     )
 
 
-@patch('trello_items.config', new=TrelloConfig())
 @patch('requests.get')
 @patch('requests.put')
 def test_uncomplete_item(mock_put_request, mock_get_requests, client):

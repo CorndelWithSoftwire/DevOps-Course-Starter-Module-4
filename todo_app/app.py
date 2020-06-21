@@ -2,8 +2,11 @@ from flask import Flask, render_template, request, redirect, url_for
 
 from todo_app.data import trello_items as trello
 from todo_app.view_model import ViewModel
+from todo_app.app_config import Config
+
 
 app = Flask(__name__)
+app.config.from_object(Config)
 
 
 @app.route('/')
@@ -34,7 +37,7 @@ def complete_item(id):
 @app.route('/items/<id>/uncomplete')
 def uncomplete_item(id):
     trello.uncomplete_item(id)
-    return redirect(url_for('index')) 
+    return redirect(url_for('index'))
 
 
 if __name__ == '__main__':
