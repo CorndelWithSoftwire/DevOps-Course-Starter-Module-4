@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% macro display_item(item) -%}
-<li class="list-group-item">
+<li class="list-group-item" data-test-class="task">
   <div class="d-flex w-100 justify-content-between">
     <h5 class="mb-1">{{ item.name }}</h5>
     {% if item.status == 'Done' %}
@@ -23,9 +23,9 @@
 </li>
 {%- endmacro %}
 
-{% macro display_item_list(title, items) -%}
+{% macro display_item_list(title, items, test_id) -%}
 <div class="row">
-  <div class="col-md-12">
+  <div class="col-md-12" data-test-id="{{ test_id }}">
     <h2>{{ title }}</h2>
     <ul class="list-group mb-4">
       {% for item in items %}
@@ -50,7 +50,7 @@
       <form action="{{ url_for('add_item') }}" method="POST">
         <div class="form-group form-row align-items-center">
           <div class="col">
-            <input type="text" name="name" id="name-input" class="form-control" placeholder="Name" aria-label="Name">
+            <input type="text" name="name" id="name-input" class="form-control" placeholder="Name" aria-label="Name" data-test-id="name-input">
           </div>
           <div class="col-auto">
             <button type="submit" class="btn btn-success">Add Item</button>
@@ -60,15 +60,15 @@
     </div>
   </div>
 
-  {{ display_item_list('To Do', model.to_do_items) }}
-  {{ display_item_list('Doing', model.doing_items) }}
+  {{ display_item_list('To Do', model.to_do_items, 'to-do-section') }}
+  {{ display_item_list('Doing', model.doing_items, 'doing-section') }}
 
   {% if model.show_all_done_items %}
-    {{ display_item_list('Done', model.done_items) }}
+    {{ display_item_list('Done', model.done_items, 'done-section') }}
   {% else %}
-    {{ display_item_list('Recently Completed', model.recent_done_items) }}
+    {{ display_item_list('Recently Completed', model.recent_done_items, 'recently-done-section') }}
     <details>
-      {{ display_item_list('', model.older_done_items) }}
+      {{ display_item_list('', model.older_done_items, 'older-done-section') }}
       <summary>Older Tasks</summary>
     </details>
   {% endif %}
