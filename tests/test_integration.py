@@ -1,24 +1,17 @@
 from unittest.mock import patch, Mock
 
 import pytest
+from dotenv import load_dotenv, find_dotenv
 
 from todo_app.app import app
 
 
-class TestConfig:
-    SECRET_KEY = 'secret'
-    TESTING = True
-    TRELLO_BASE_URL = 'https://api.trello.com/1'
-    TRELLO_API_KEY = 'api_key'
-    TRELLO_API_SECRET = 'api_secret'
-    TRELLO_BOARD_ID = 'abcd1234'
-
-
 @pytest.fixture
 def client():
-    test_app = app.config.from_object(TestConfig)
+    file_path = find_dotenv('.env.test')
+    load_dotenv(file_path, override=True)
 
-    with test_app.test_client() as client:
+    with app.test_client() as client:
         yield client
 
 

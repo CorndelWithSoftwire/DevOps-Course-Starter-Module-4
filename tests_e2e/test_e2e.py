@@ -1,4 +1,5 @@
 import os
+import time
 from threading import Thread
 
 import pytest
@@ -9,50 +10,40 @@ import requests
 import app
 
 load_dotenv()
+TRELLO_BASE_URL = 'https://api.trello.com/1'
+TRELLO_API_KEY = os.environ.get('TRELLO_API_KEY')
+TRELLO_API_SECRET = os.environ.get('TRELLO_API_SECRET')
 
 
-class TestConfig:
-    SECRET_KEY = 'secret'
-    TESTING = True
-    TRELLO_BASE_URL = 'https://api.trello.com/1'
-    TRELLO_API_KEY = os.environ.get('TRELLO_API_KEY')
-    TRELLO_API_SECRET = os.environ.get('TRELLO_API_SECRET')
-    TRELLO_BOARD_ID = None
-
-
-def get_test_config():
-    config = TestConfig()
-    board = create_trello_board(config)
-    config.TRELLO_BOARD_ID = board['id']
-    return config
-
-
-def create_trello_board(config):
+def create_trello_board():
     response = requests.post(
-        url=f'{config.TRELLO_BASE_URL}/boards',
+        url=f'{TRELLO_BASE_URL}/boards',
         params={
-            'key': config.TRELLO_API_KEY,
-            'token': config.TRELLO_API_SECRET,
+            'key': TRELLO_API_KEY,
+            'token': TRELLO_API_SECRET,
             'name': 'Selenium Test Board'
         }
     )
-    return response.json()
+    return response.json()['id']
 
 
-def delete_trello_board(config):
+def delete_trello_board(board_id):
     requests.delete(
-        url=f'{config.TRELLO_BASE_URL}/boards/{config.TRELLO_BOARD_ID}',
+        url=f'{TRELLO_BASE_URL}/boards/{board_id}',
         params={
-            'key': config.TRELLO_API_KEY,
-            'token': config.TRELLO_API_SECRET,
+            'key': TRELLO_API_KEY,
+            'token': TRELLO_API_SECRET,
         }
     )
 
 
 @pytest.fixture(scope='module')
 def test_app():
-    config = get_test_config()
-    application = app.create_app(config)
+    board_id = create_trello_board()
+    os.environ['TRELLO_BOARD_ID'] = board_id
+
+    application = app.create_app()
+
     thread = Thread(target=lambda: application.run(use_reloader=False))
     thread.daemon = True
     thread.start()
@@ -60,7 +51,7 @@ def test_app():
 
     # Tear Down
     thread.join(1)
-    delete_trello_board(config)
+    delete_trello_board(board_id)
 
 
 @pytest.fixture
