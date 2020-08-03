@@ -2,8 +2,8 @@ from datetime import date, datetime
 
 from freezegun import freeze_time
 
-from todo_item import Item
-from view_model import ViewModel
+from todo_app.data.trello_items import Item
+from todo_app.view_model import ViewModel
 
 
 def test_categories_are_empty_if_no_matching_items():

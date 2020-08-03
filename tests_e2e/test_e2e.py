@@ -7,7 +7,7 @@ from selenium import webdriver
 from dotenv import load_dotenv
 import requests
 
-import app
+from todo_app.app import app
 
 load_dotenv()
 TRELLO_BASE_URL = 'https://api.trello.com/1'
@@ -42,9 +42,7 @@ def test_app():
     board_id = create_trello_board()
     os.environ['TRELLO_BOARD_ID'] = board_id
 
-    application = app.create_app()
-
-    thread = Thread(target=lambda: application.run(use_reloader=False))
+    thread = Thread(target=lambda: app.run(use_reloader=False))
     thread.daemon = True
     thread.start()
     yield app
