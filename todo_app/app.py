@@ -1,6 +1,7 @@
+from flask import Flask, render_template, redirect, url_for, request
+
 from todo_app.flask_config import Config
 from todo_app.data import trello_items as trello
-from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask(__name__)
 app.config.from_object(Config)
