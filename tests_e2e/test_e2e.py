@@ -52,13 +52,12 @@ def test_app():
     delete_trello_board(board_id)
 
 
-@pytest.fixture
+@pytest.fixture(scope='module')
 def driver():
-    driver = webdriver.Firefox()
-    yield driver
-
-    # Tear Down
-    driver.quit()
+    opts = webdriver.ChromeOptions()
+    #opts.add_argument('--headless')
+    with webdriver.Chrome('./chromedriver', options=opts) as driver:
+        yield driver
 
 
 def test_task_journey(driver, test_app):
