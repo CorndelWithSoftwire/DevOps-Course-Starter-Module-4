@@ -1,12 +1,13 @@
 from todo_item import Item
 import requests
-from todo_app import trello_config as config
+from flask import current_app as app
+
 
 def get_auth_params():
-    return { 'key': config.TRELLO_API_KEY, 'token': config.TRELLO_API_SECRET }
+    return { 'key': app.config['TRELLO_API_KEY'], 'token': app.config['TRELLO_API_SECRET'] }
 
 def build_url(endpoint):
-    return config.TRELLO_BASE_URL + endpoint
+    return app.config['TRELLO_BASE_URL'] + endpoint
 
 def build_params(params = {}):
     full_params = get_auth_params()
@@ -52,7 +53,7 @@ def get_lists():
         list: The list of Trello lists.
     """
     params = build_params({ 'cards': 'open' }) # Only return cards that have not been archived
-    url = build_url('/boards/%s/lists' % config.TRELLO_BOARD_ID)
+    url = build_url('/boards/%s/lists' % app.config['TRELLO_BOARD_ID'])
 
     response = requests.get(url, params = params)
     lists = response.json()
