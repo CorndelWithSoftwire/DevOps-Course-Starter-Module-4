@@ -14,11 +14,11 @@
     <div><span class="badge {{ badge_style }}">{{ item.status }}</span></div>
   </div>
   {% if item.status == 'Done' %}
-    <a href="{{ url_for('uncomplete_item', id=item.id) }}" class="btn btn-sm btn-secondary">Mark as Incomplete</a>
+    <a href="{{ url_for('todo.uncomplete_item', id=item.id) }}" class="btn btn-sm btn-secondary">Mark as Incomplete</a>
   {% elif item.status == 'To Do' %}
-    <a href="{{ url_for('start_item', id=item.id) }}" class="btn btn-sm btn-success">Start</a>
+    <a href="{{ url_for('todo.start_item', id=item.id) }}" class="btn btn-sm btn-success">Start</a>
   {% else %}
-    <a href="{{ url_for('complete_item', id=item.id) }}" class="btn btn-sm btn-primary">Complete</a>
+    <a href="{{ url_for('todo.complete_item', id=item.id) }}" class="btn btn-sm btn-primary">Complete</a>
   {% endif %}
 </li>
 {%- endmacro %}
@@ -47,7 +47,7 @@
   <div class="row">
     <div class="col-md-12">
       <h2>New item</h2>
-      <form action="{{ url_for('add_item') }}" method="POST">
+      <form action="{{ url_for('todo.add_item') }}" method="POST">
         <div class="form-group form-row align-items-center">
           <div class="col">
             <input type="text" name="name" id="name-input" class="form-control" placeholder="Name" aria-label="Name" data-test-id="name-input">
