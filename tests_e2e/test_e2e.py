@@ -1,26 +1,21 @@
 import os
 import time
 from threading import Thread
-
+from todo_app.app_config import Config
 import pytest
 from selenium import webdriver
 from dotenv import load_dotenv
 import requests
 
-from todo_app.app import app
-
-load_dotenv()
-TRELLO_BASE_URL = 'https://api.trello.com/1'
-TRELLO_API_KEY = os.environ.get('TRELLO_API_KEY')
-TRELLO_API_SECRET = os.environ.get('TRELLO_API_SECRET')
-
+from todo_app.app import create_app
 
 def create_trello_board():
+    config = Config()
     response = requests.post(
-        url=f'{TRELLO_BASE_URL}/boards',
+        url=f'{config.TRELLO_BASE_URL}/boards',
         params={
-            'key': TRELLO_API_KEY,
-            'token': TRELLO_API_SECRET,
+            'key': config.TRELLO_API_KEY,
+            'token': config.TRELLO_API_SECRET,
             'name': 'Selenium Test Board'
         }
     )
@@ -28,20 +23,23 @@ def create_trello_board():
 
 
 def delete_trello_board(board_id):
+    config = Config()
     requests.delete(
-        url=f'{TRELLO_BASE_URL}/boards/{board_id}',
+        url=f'{config.TRELLO_BASE_URL}/boards/{board_id}',
         params={
-            'key': TRELLO_API_KEY,
-            'token': TRELLO_API_SECRET,
+            'key': config.TRELLO_API_KEY,
+            'token': config.TRELLO_API_SECRET,
         }
     )
 
 
 @pytest.fixture(scope='module')
 def test_app():
+    load_dotenv(override=True)
     board_id = create_trello_board()
     os.environ['TRELLO_BOARD_ID'] = board_id
 
+    app = create_app()
     thread = Thread(target=lambda: app.run(use_reloader=False))
     thread.daemon = True
     thread.start()

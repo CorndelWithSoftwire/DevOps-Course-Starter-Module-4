@@ -4,6 +4,7 @@ from unittest.mock import patch, Mock
 import pytest
 from dotenv import load_dotenv, find_dotenv
 
+from todo_app.app import create_app
 
 @pytest.fixture
 def test_environment_vars():
@@ -13,11 +14,7 @@ def test_environment_vars():
 
 @pytest.fixture
 def client(test_environment_vars):
-    # Delay flask initialisation until env variables are set for testing
-    # This ensures we get the appropriate config
-    from todo_app.app import app
-
-    with app.test_client() as client:
+    with create_app().test_client() as client:
         yield client
 
 
