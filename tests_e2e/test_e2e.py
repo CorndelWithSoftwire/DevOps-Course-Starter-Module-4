@@ -22,10 +22,10 @@ def create_trello_board():
     return response.json()['id']
 
 
-def delete_trello_board():
+def delete_trello_board(board_id):
     config = Config()
     requests.delete(
-        url=f'{config.TRELLO_BASE_URL}/boards/{config.TRELLO_BOARD_ID}',
+        url=f'{config.TRELLO_BASE_URL}/boards/{board_id}',
         params={
             'key': config.TRELLO_API_KEY,
             'token': config.TRELLO_API_SECRET,
@@ -47,7 +47,7 @@ def test_app():
 
     # Tear Down
     thread.join(1)
-    delete_trello_board()
+    delete_trello_board(board_id)
 
 
 @pytest.fixture(scope='module')
