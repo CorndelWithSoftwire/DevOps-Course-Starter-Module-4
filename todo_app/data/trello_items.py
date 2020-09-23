@@ -4,7 +4,7 @@ from flask import current_app as app
 
 
 def get_auth_params():
-    return {'key': app.config['TRELLO_API_KEY'], 'token': app.config['TRELLO_API_SECRET']}
+    return { 'key': app.config['TRELLO_API_KEY'], 'token': app.config['TRELLO_API_SECRET'] }
 
 
 def build_url(endpoint):

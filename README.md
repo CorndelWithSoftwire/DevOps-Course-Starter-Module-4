@@ -16,6 +16,17 @@ curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poet
 (Invoke-WebRequest -Uri https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py -UseBasicParsing).Content | python
 ```
 
+## Pre-requisites 
+
+You'll need to have a [Trello](https://trello.com/) account and an API key/token pair to setup this app. Details on how to obtain these can be found [here](https://developer.atlassian.com/cloud/trello/guides/rest-api/api-introduction/).
+
+You'll also want to have a Trello board setup for your todos with 3 lists with the following names:
+* To Do
+* Doing
+* Done
+
+You'll also want to have your board id to hand. See [here](https://developer.atlassian.com/cloud/trello/guides/rest-api/api-introduction/#boards) on how to locate your board id.
+
 ## Dependencies
 
 The project uses a virtual environment to isolate package dependencies. To create the virtual environment and install required packages, run the following from your preferred shell:
@@ -24,13 +35,15 @@ The project uses a virtual environment to isolate package dependencies. To creat
 $ poetry install
 ```
 
-You'll also need to clone a new `.env` file from the `.env.tempalate` to store local configuration options. This is a one-time operation on first setup:
+You'll also need to clone a new `.env` file from the `.env.template` to store local configuration options. This is a one-time operation on first setup:
 
 ```bash
 $ cp .env.template .env  # (first time only)
 ```
 
-The `.env` file is used by flask to set environment variables when running `flask run`. This enables things like development mode (which also enables features like hot reloading when you make a file change). There's also a [SECRET_KEY](https://flask.palletsprojects.com/en/1.1.x/config/#SECRET_KEY) variable which is used to encrypt the flask session cookie.
+The `.env` file is used by flask to set environment variables when running `flask run`. This enables things like development mode (which also enables features like hot reloading when you make a file change). 
+
+You also want to fill in the values for your Trello API key, token and board (see the prerequisites section above)
 
 ## Running the App
 
