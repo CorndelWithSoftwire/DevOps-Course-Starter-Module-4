@@ -1,5 +1,4 @@
 import os
-import time
 from threading import Thread
 from todo_app.app_config import Config
 import pytest
@@ -52,9 +51,7 @@ def test_app():
 
 @pytest.fixture(scope='module')
 def driver():
-    opts = webdriver.ChromeOptions()
-    #opts.add_argument('--headless')
-    with webdriver.Chrome('./chromedriver', options=opts) as driver:
+    with webdriver.Chrome() as driver:
         yield driver
 
 

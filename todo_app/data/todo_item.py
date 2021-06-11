@@ -18,15 +18,6 @@ class Item:
             list['name']
         )
 
-    def reset(self):
-        self.status = 'To Do'
-
-    def start(self):
-        self.status = 'Doing'
-
-    def complete(self):
-        self.status = 'Done'
-
     def modified_today(self):
         return self.last_modified.date() == date.today()
 
