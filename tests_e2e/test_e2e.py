@@ -1,5 +1,4 @@
 import os
-import time
 from threading import Thread
 from todo_app.app_config import Config
 import pytest
