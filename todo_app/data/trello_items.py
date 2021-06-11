@@ -17,36 +17,6 @@ def build_params(params={}):
     return full_params
 
 
-def get_boards():
-    """
-    Fetches all boards from Trello.
-
-    Returns:
-        list: The list of Trello boards.
-    """
-    params = build_params()
-    url = build_url('/members/me/boards')
-
-    response = requests.get(url, params = params)
-    boards = response.json()
-
-    return boards
-
-
-def get_board(name):
-    """
-    Fetches the board from Trello with the specified name.
-
-    Args:
-        name (str): The name of the list.
-
-    Returns:
-        board: The board, or None if no board matches the specified name.
-    """
-    boards = get_boards()
-    return next((board for board in boards if board['name'] == name), None)
-
-
 def get_lists():
     """
     Fetches all lists for the default Trello board.
@@ -92,20 +62,6 @@ def get_items():
             items.append(Item.fromTrelloCard(card, card_list))
 
     return items
-
-
-def get_item(id):
-    """
-    Fetches the item ("card") with the specified ID.
-
-    Args:
-        id (str): The ID of the item.
-
-    Returns:
-        item: The item, or None if no items match the specified ID.
-    """
-    items = get_items()
-    return next((item for item in items if item['id'] == id), None)
 
 
 def add_item(name):
