@@ -16,17 +16,17 @@ def add_item():
     trello.add_item(name)
     return redirect(url_for('todo.index'))
 
-@todo.route('/items/<id>/start')
-def start_item(id):
-    trello.start_item(id)
+@todo.route('/items/<item_id>/start')
+def start_item(item_id):
+    trello.start_item(item_id)
     return redirect(url_for('todo.index'))
 
-@todo.route('/items/<id>/complete')
-def complete_item(id):
-    trello.complete_item(id)
+@todo.route('/items/<item_id>/complete')
+def complete_item(item_id):
+    trello.complete_item(item_id)
     return redirect(url_for('todo.index'))
 
-@todo.route('/items/<id>/uncomplete')
-def uncomplete_item(id):
-    trello.uncomplete_item(id)
+@todo.route('/items/<item_id>/uncomplete')
+def uncomplete_item(item_id):
+    trello.uncomplete_item(item_id)
     return redirect(url_for('todo.index'))

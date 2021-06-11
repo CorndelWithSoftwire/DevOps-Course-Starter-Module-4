@@ -1,11 +1,11 @@
 import os
 from threading import Thread
-from todo_app.app_config import Config
 import pytest
 from selenium import webdriver
 from dotenv import load_dotenv
 import requests
 
+from todo_app.app_config import Config
 from todo_app.app import create_app
 
 def create_trello_board():
@@ -33,7 +33,7 @@ def delete_trello_board(board_id):
 
 
 @pytest.fixture(scope='module')
-def test_app():
+def app_with_temp_board():
     load_dotenv(override=True)
     board_id = create_trello_board()
     os.environ['TRELLO_BOARD_ID'] = board_id
@@ -55,7 +55,7 @@ def driver():
         yield driver
 
 
-def test_task_journey(driver, test_app):
+def test_task_journey(driver, app_with_temp_board):
     driver.get('http://localhost:5000/')
 
     assert driver.title == 'To-Do App'
