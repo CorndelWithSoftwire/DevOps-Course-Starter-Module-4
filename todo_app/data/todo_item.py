@@ -3,7 +3,7 @@ from datetime import date, datetime
 
 class Item:
 
-    def __init__(self, id, name, last_modified, status='To Do'):
+    def __init__(self, id, name, last_modified, status):
         self.id = id
         self.name = name
         self.last_modified = last_modified
@@ -30,4 +30,5 @@ class Item:
 
         return self.id == other.id \
             and self.name == other.name \
-            and self.status == other.status
+            and self.status == other.status \
+            and self.last_modified == other.last_modified
